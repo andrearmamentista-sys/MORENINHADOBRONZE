@@ -18,11 +18,7 @@ import {
   ShieldCheck,
   Loader2,
   ShoppingCart,
-  Plus,
-  PlusCircle,
-  ChevronDown,
-  ChevronUp,
-  Flame
+  Plus
 } from 'lucide-react';
 import { Service, SalonConfig, Appointment, Specialist } from '../types';
 import { formatCurrency, formatDate, generatePixPayload, formatPixKey } from '../utils/helpers';
@@ -61,56 +57,43 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   onConfirmBooking,
   onConfirm,
 }) => {
-  // Determine current active service
-  const activeService = useMemo(() => {
-    if (propService) return propService;
+  // Cart state: users can book one or multiple services/combos
+  // If user clicked a specific service (propService or initialServiceId), start with it.
+  // Otherwise, start with an EMPTY cart so the user chooses their procedure!
+  const [cart, setCart] = useState<Service[]>(() => {
+    if (propService) return [propService];
     if (initialServiceId && services.length > 0) {
       const found = services.find((s) => s.id === initialServiceId);
-      if (found) return found;
+      if (found) return [found];
     }
-    return services[0] || {
-      id: 'bronze-1h',
-      name: '1 Hora de Bronze',
-      price: 25.0,
-      description: 'Bronzeamento com hidratação e marquinha perfeita.',
-      durationMinutes: 60,
-    };
-  }, [propService, initialServiceId, services]);
-
-  // Cart state: users can book one or multiple services/combos
-  const [cart, setCart] = useState<Service[]>(() => [activeService]);
-  const [isCatalogOpen, setIsCatalogOpen] = useState(false);
-  const [addedItemName, setAddedItemName] = useState<string | null>(null);
+    return [];
+  });
 
   // Sync cart when propService or initialServiceId changes
   useEffect(() => {
-    if (activeService) {
-      setCart([activeService]);
+    if (propService) {
+      setCart([propService]);
+    } else if (initialServiceId && services.length > 0) {
+      const found = services.find((s) => s.id === initialServiceId);
+      if (found) {
+        setCart([found]);
+      } else {
+        setCart([]);
+      }
+    } else {
+      setCart([]);
     }
-  }, [activeService]);
+  }, [propService, initialServiceId, services]);
 
   const handleAddToCart = (serviceToAdd: Service) => {
     setCart((prev) => [...prev, serviceToAdd]);
     setErrorMsg('');
-    setAddedItemName(serviceToAdd.name);
-    setTimeout(() => {
-      setAddedItemName(null);
-    }, 2500);
   };
 
   const handleRemoveFromCart = (indexToRemove: number) => {
-    if (cart.length <= 1) {
-      setErrorMsg('O agendamento precisa conter pelo menos 1 procedimento.');
-      return;
-    }
     setCart((prev) => prev.filter((_, idx) => idx !== indexToRemove));
     setErrorMsg('');
   };
-
-  const unaddedServices = useMemo(() => {
-    const cartIds = new Set(cart.map((c) => c.id));
-    return services.filter((s) => !cartIds.has(s.id));
-  }, [services, cart]);
 
   const cartTotal = useMemo(() => {
     return cart.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
@@ -319,6 +302,10 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   };
 
   const handleNextFromStep1 = () => {
+    if (cart.length === 0) {
+      setErrorMsg('Por favor, selecione o procedimento que deseja agendar.');
+      return;
+    }
     if (!selectedDate) {
       setErrorMsg('Selecione uma data para o agendamento.');
       return;
@@ -404,12 +391,17 @@ export const BookingModal: React.FC<BookingModalProps> = ({
             <div>
               <h2 className="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-2">
                 <span>Agendar Procedimento</span>
-                <span className="text-[11px] bg-white/20 text-white font-semibold px-2 py-0.5 rounded-full">
-                  {cart.length} {cart.length === 1 ? 'item' : 'itens'}
-                </span>
+                {cart.length > 0 && (
+                  <span className="text-[11px] bg-white/20 text-white font-semibold px-2 py-0.5 rounded-full">
+                    {cart.length} {cart.length === 1 ? 'item' : 'itens'}
+                  </span>
+                )}
               </h2>
               <p className="text-xs text-sky-100 font-medium">
-                Total: {formatCurrency(cartTotal)} • ~{cartTotalDuration >= 60 ? `${Math.floor(cartTotalDuration / 60)}h ${cartTotalDuration % 60 > 0 ? (cartTotalDuration % 60) + 'm' : ''}` : `${cartTotalDuration} min`}
+                {cart.length > 0
+                  ? `Total: ${formatCurrency(cartTotal)} • ~${cartTotalDuration >= 60 ? `${Math.floor(cartTotalDuration / 60)}h ${cartTotalDuration % 60 > 0 ? (cartTotalDuration % 60) + 'm' : ''}` : `${cartTotalDuration} min`}`
+                  : 'Escolha seu procedimento para iniciar'
+                }
               </p>
             </div>
           </div>
@@ -462,219 +454,117 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                     </div>
                     <div>
                       <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wide">
-                        Carrinho de Procedimentos
+                        Procedimento Desejado
                       </h3>
                       <p className="text-[10px] text-slate-500">
-                        {cart.length} {cart.length === 1 ? 'procedimento selecionado' : 'procedimentos selecionados'}
+                        {cart.length === 0
+                          ? 'Escolha o procedimento para iniciar'
+                          : `${cart.length} ${cart.length === 1 ? 'procedimento selecionado' : 'procedimentos selecionados'}`
+                        }
                       </p>
                     </div>
                   </div>
 
-                  <div className="text-right">
-                    <span className="text-xs font-black text-sky-700 block">
-                      {formatCurrency(cartTotal)}
-                    </span>
-                    <span className="text-[10px] text-slate-500 font-medium">
-                      ~{cartTotalDuration >= 60 ? `${Math.floor(cartTotalDuration / 60)}h ${cartTotalDuration % 60 > 0 ? (cartTotalDuration % 60) + 'm' : ''}` : `${cartTotalDuration}m`}
-                    </span>
-                  </div>
+                  {cart.length > 0 && (
+                    <div className="text-right">
+                      <span className="text-xs font-black text-sky-700 block">
+                        {formatCurrency(cartTotal)}
+                      </span>
+                      <span className="text-[10px] text-slate-500 font-medium">
+                        ~{cartTotalDuration >= 60 ? `${Math.floor(cartTotalDuration / 60)}h ${cartTotalDuration % 60 > 0 ? (cartTotalDuration % 60) + 'm' : ''}` : `${cartTotalDuration}m`}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
-                {/* Itens do Carrinho */}
-                <div className="space-y-1.5 divide-y divide-slate-100">
-                  {cart.map((item, idx) => (
-                    <div key={`${item.id}-${idx}`} className="pt-1.5 first:pt-0 flex items-center justify-between gap-2 text-xs">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <span className="w-2 h-2 rounded-full bg-sky-500 shrink-0" />
-                        <div className="truncate">
-                          <span className="font-bold text-slate-800 truncate block">
-                            {item.name}
-                          </span>
-                          <span className="text-[10px] text-slate-500">
-                            {item.duration || `${item.durationMinutes || 60}m`} • {formatCurrency(item.price)}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className="font-extrabold text-slate-800 text-xs">
-                          {formatCurrency(item.price)}
-                        </span>
-                        {cart.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveFromCart(idx)}
-                            className="p-1 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
-                            title="Remover do carrinho"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Added Item Notification */}
-                {addedItemName && (
-                  <div className="p-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold text-xs flex items-center justify-between shadow-md shadow-emerald-600/20 animate-in fade-in slide-in-from-top-1 duration-200">
-                    <div className="flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 shrink-0 text-white" />
-                      <span>✨ <strong>{addedItemName}</strong> adicionado ao carrinho!</span>
-                    </div>
-                    <span className="text-[10px] bg-white/20 text-white px-2 py-0.5 rounded-full font-extrabold uppercase">
-                      Pronto!
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              {/* ÁREA DESTACADA: Adicionar Outro Procedimento ao Carrinho (Máxima Atenção) */}
-              <div className="p-4 rounded-3xl bg-gradient-to-br from-sky-50 via-cyan-50/80 to-amber-50/70 border-2 border-sky-400 shadow-md shadow-sky-600/10 space-y-3 relative overflow-hidden ring-2 ring-sky-300/40">
-                {/* Efeito sutil de brilho no fundo */}
-                <div className="absolute -right-6 -bottom-6 w-28 h-28 rounded-full bg-gradient-to-tr from-sky-400/20 to-amber-300/20 blur-xl pointer-events-none" />
-
-                {/* Header do Destaque */}
-                <div className="flex items-start justify-between gap-2 relative z-10">
-                  <div className="flex items-start gap-2.5">
-                    <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-sky-600 to-cyan-500 text-white flex items-center justify-center shadow-md shadow-sky-600/30 shrink-0 mt-0.5 animate-pulse">
-                      <Sparkles className="w-5 h-5 text-amber-200 fill-amber-200" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        <h4 className="text-xs sm:text-sm font-black text-slate-900 tracking-tight">
-                          Deseja adicionar mais um procedimento?
-                        </h4>
-                        <span className="text-[10px] font-extrabold bg-gradient-to-r from-amber-500 to-rose-500 text-white px-2 py-0.5 rounded-full shadow-2xs uppercase tracking-wider">
-                          Monte seu Combo ✨
-                        </span>
-                      </div>
-                      <p className="text-[11px] text-slate-600 font-medium mt-1 leading-snug">
-                        Aproveite o mesmo horário para fazer marquinha + banho de lua ou hidratação e poupe tempo!
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Sugestões Rápidas de 1 Clique */}
-                {unaddedServices.length > 0 && (
-                  <div className="space-y-1.5 pt-1 relative z-10">
-                    <span className="text-[10px] font-bold text-sky-900 uppercase tracking-wider flex items-center gap-1">
-                      <Flame className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                      Sugestões rápidas para seu bronze (1 toque):
-                    </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {unaddedServices.slice(0, 3).map((sugg) => (
-                        <button
-                          key={sugg.id}
-                          type="button"
-                          onClick={() => handleAddToCart(sugg)}
-                          className="py-1.5 px-3 rounded-xl bg-white hover:bg-sky-100/80 active:scale-95 border border-sky-300 hover:border-sky-500 text-slate-800 text-xs font-bold shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer group"
-                          title={`Adicionar ${sugg.name}`}
-                        >
-                          <Plus className="w-3.5 h-3.5 text-sky-600 group-hover:scale-125 transition-transform" />
-                          <span>{sugg.name}</span>
-                          <span className="text-sky-700 font-extrabold bg-sky-100 px-1.5 py-0.5 rounded-md text-[10px]">
-                            +{formatCurrency(sugg.price)}
-                          </span>
-                        </button>
+                {cart.length === 0 ? (
+                  /* Quando ainda não escolheu nenhum procedimento */
+                  <div className="pt-1 pb-1 space-y-2">
+                    <label className="block text-xs font-bold text-slate-700">
+                      Selecione o procedimento que você deseja realizar:
+                    </label>
+                    <select
+                      onChange={(e) => {
+                        const found = services.find((s) => s.id === e.target.value);
+                        if (found) {
+                          handleAddToCart(found);
+                          e.target.value = '';
+                        }
+                      }}
+                      defaultValue=""
+                      className="w-full text-xs font-bold py-3 px-3 rounded-xl bg-slate-100 hover:bg-slate-200/80 border-2 border-sky-500 text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-sky-500 cursor-pointer shadow-xs"
+                    >
+                      <option value="" disabled>
+                        Clique aqui para escolher seu procedimento...
+                      </option>
+                      {services.map((srv) => (
+                        <option key={srv.id} value={srv.id}>
+                          {srv.name} — {formatCurrency(srv.price)} ({srv.duration || `${srv.durationMinutes || 60}m`})
+                        </option>
                       ))}
-                    </div>
+                    </select>
                   </div>
-                )}
-
-                {/* Botão Principal Chamativo: Abrir/Fechar Catálogo Completo */}
-                <div className="pt-1 relative z-10">
-                  <button
-                    type="button"
-                    onClick={() => setIsCatalogOpen(!isCatalogOpen)}
-                    className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-sky-600 via-sky-500 to-cyan-600 hover:from-sky-500 hover:to-cyan-500 active:scale-[0.98] text-white font-extrabold text-xs sm:text-sm flex items-center justify-between shadow-lg shadow-sky-600/30 transition-all cursor-pointer ring-2 ring-sky-300/40"
-                  >
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-                        <PlusCircle className="w-4 h-4 text-white" />
-                      </div>
-                      <span className="tracking-tight text-left">
-                        {config.btnAddServiceToCartText || '+ Adicionar Outro Procedimento ao Carrinho'}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-sky-100 text-xs font-bold shrink-0 pl-2">
-                      <span>{isCatalogOpen ? 'Recolher' : 'Ver Opções'}</span>
-                      {isCatalogOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                    </div>
-                  </button>
-                </div>
-
-                {/* Gaveta do Catálogo Interativo Expandido */}
-                {isCatalogOpen && (
-                  <div className="pt-2 border-t border-sky-200/90 space-y-2.5 animate-in fade-in duration-200 relative z-10">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-slate-800">
-                        Procedimentos Disponíveis ({services.length}):
-                      </span>
-                      <span className="text-[11px] text-sky-700 font-bold">Toque em + Adicionar</span>
-                    </div>
-
-                    <div className="max-h-56 overflow-y-auto space-y-2 pr-1">
-                      {services.map((srv) => {
-                        const inCartCount = cart.filter((c) => c.id === srv.id).length;
-                        return (
-                          <div
-                            key={srv.id}
-                            className={`p-2.5 rounded-2xl border transition-all flex items-center justify-between gap-2.5 ${
-                              inCartCount > 0
-                                ? 'bg-sky-100/70 border-sky-300 shadow-2xs'
-                                : 'bg-white border-slate-200 hover:border-sky-300 shadow-2xs'
-                            }`}
-                          >
-                            <div className="flex items-center gap-2.5 min-w-0">
-                              <div className="w-10 h-10 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0 flex items-center justify-center">
-                                {srv.imageUrl || srv.image ? (
-                                  <img
-                                    src={srv.imageUrl || srv.image}
-                                    alt={srv.name}
-                                    className="w-full h-full object-cover"
-                                    onError={(e) => {
-                                      e.currentTarget.src = '/images/banner-thumb.png';
-                                    }}
-                                  />
-                                ) : (
-                                  <Sparkles className="w-5 h-5 text-sky-600" />
-                                )}
-                              </div>
-
-                              <div className="min-w-0">
-                                <h5 className="font-bold text-slate-900 text-xs truncate">
-                                  {srv.name}
-                                </h5>
-                                <div className="flex items-center gap-1.5 text-[11px] text-slate-500 flex-wrap">
-                                  <span>{srv.duration || `${srv.durationMinutes || 60}m`}</span>
-                                  <span>•</span>
-                                  <span className="font-extrabold text-sky-700">
-                                    {formatCurrency(srv.price)}
-                                  </span>
-                                  {inCartCount > 0 && (
-                                    <span className="text-[9px] font-bold bg-sky-200 text-sky-800 px-1.5 py-0.5 rounded-md">
-                                      {inCartCount} no carrinho
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
+                ) : (
+                  <>
+                    {/* Itens do Carrinho */}
+                    <div className="space-y-1.5 divide-y divide-slate-100">
+                      {cart.map((item, idx) => (
+                        <div key={`${item.id}-${idx}`} className="pt-1.5 first:pt-0 flex items-center justify-between gap-2 text-xs">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="w-2 h-2 rounded-full bg-sky-500 shrink-0" />
+                            <div className="truncate">
+                              <span className="font-bold text-slate-800 truncate block">
+                                {item.name}
+                              </span>
+                              <span className="text-[10px] text-slate-500">
+                                {item.duration || `${item.durationMinutes || 60}m`} • {formatCurrency(item.price)}
+                              </span>
                             </div>
+                          </div>
 
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="font-extrabold text-slate-800 text-xs">
+                              {formatCurrency(item.price)}
+                            </span>
                             <button
                               type="button"
-                              onClick={() => handleAddToCart(srv)}
-                              className="shrink-0 py-1.5 px-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs flex items-center gap-1 active:scale-95 transition-all shadow-xs cursor-pointer"
+                              onClick={() => handleRemoveFromCart(idx)}
+                              className="p-1 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                              title="Remover procedimento"
                             >
-                              <Plus className="w-3.5 h-3.5" />
-                              <span>Adicionar</span>
+                              <Trash2 className="w-3.5 h-3.5" />
                             </button>
                           </div>
-                        );
-                      })}
+                        </div>
+                      ))}
                     </div>
-                  </div>
+
+                    {/* Adicionar mais procedimentos ao carrinho */}
+                    {services.length > 0 && (
+                      <div className="pt-2 border-t border-slate-100 flex items-center gap-2">
+                        <select
+                          onChange={(e) => {
+                            const found = services.find((s) => s.id === e.target.value);
+                            if (found) {
+                              handleAddToCart(found);
+                              e.target.value = '';
+                            }
+                          }}
+                          defaultValue=""
+                          className="w-full text-xs font-semibold py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200/80 border border-slate-300 text-slate-700 focus:outline-hidden focus:ring-1 focus:ring-sky-500 cursor-pointer"
+                        >
+                          <option value="" disabled>
+                            {config.btnAddServiceToCartText || '+ Adicionar outro procedimento ao carrinho...'}
+                          </option>
+                          {services.map((srv) => (
+                            <option key={srv.id} value={srv.id}>
+                              + {srv.name} ({formatCurrency(srv.price)})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
 

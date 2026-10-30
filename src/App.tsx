@@ -56,7 +56,7 @@ export default function App() {
   };
 
   const handleOpenBooking = (serviceId?: string) => {
-    setSelectedServiceId(serviceId || services[0]?.id || '');
+    setSelectedServiceId(serviceId || '');
     setIsBookingOpen(true);
   };
 
