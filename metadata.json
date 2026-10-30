@@ -1,0 +1,8 @@
+{
+  "name": "Moreninha do Bronze - Agendamento Online",
+  "description": "Aplicativo de agendamento online de bronzeamento natural, banho de lua, jet bronze e spa corporal em Mesquita - RJ.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
