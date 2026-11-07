@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Moreninha do Bronze | Agendamento Online</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bronze: {
+                            50: '#fdf8f5',
+                            100: '#fbeee6',
+                            200: '#f5d9c7',
+                            300: '#edb99a',
+                            400: '#e3946a',
+                            500: '#d97443',
+                            600: '#cb5b2a',
+                            700: '#a8451f',
+                            800: '#87391e',
+                            900: '#6f321c',
+                        },
+                        nude: {
+                            50: '#fbf9f7',
+                            100: '#f4ede6',
+                            200: '#e6d7cc',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #121212; color: #f5f5f4; }
+        .font-serif { font-family: 'Playfair Display', serif; }
+        .hero-gradient {
+            background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(18,18,18,0.95) 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 30px -5px rgba(217, 116, 67, 0.15);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-bronze-500 selection:text-white">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 backdrop-blur-md bg-stone-900/90 border-b border-stone-800">
+<div class="max-w-md mx-auto px-4 h-16 flex items-center justify-between">
+<div class="flex items-center space-x-2.5">
+<div class="w-8 h-8 rounded-full bg-gradient-to-tr from-bronze-600 to-amber-500 flex items-center justify-center shadow-md">
+<i class="fa-solid fa-sun text-stone-950 text-xs"></i>
+</div>
+<span class="font-serif font-bold text-base tracking-wide text-amber-200">Moreninha do Bronze</span>
+</div>
+<div class="flex items-center space-x-2">
+<button class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-stone-800 text-stone-200 hover:bg-stone-700 border border-stone-700 transition flex items-center gap-1.5" onclick="openClientBookingsModal()">
+<i class="fa-solid fa-calendar-days text-amber-400"></i> Meus Agendamentos
+                </button>
+<button class="p-2 rounded-xl text-stone-400 hover:text-amber-400 hover:bg-stone-800 transition" id="adminToggleBtn" onclick="toggleAdminPanel()" title="Painel Admin">
+<i class="fa-solid fa-lock text-sm"></i>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Container (Mobile First Wrapper max-w-md) -->
+<main class="flex-grow max-w-md w-full mx-auto pb-16">
+<!-- PROFILE HERO HEADER -->
+<div class="relative w-full h-72 bg-stone-900 overflow-hidden shadow-lg">
+<img alt="Capa Estética" class="w-full h-full object-cover opacity-60" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/>
+<div class="absolute inset-0 hero-gradient"></div>
+<!-- Avatar & Title Inside Hero -->
+<div class="absolute bottom-6 left-0 right-0 px-5 text-center flex flex-col items-center">
+<div class="w-20 h-20 rounded-full p-1 bg-stone-900 border-2 border-amber-500 shadow-2xl mb-3 overflow-hidden">
+<img alt="Logo" class="w-full h-full object-cover rounded-full" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/>
+</div>
+<h1 class="text-2xl font-serif font-bold text-white tracking-wide">Moreninha do Bronze</h1>
+<p class="text-xs text-amber-300 font-medium tracking-wider uppercase mt-0.5">Rua Aurélia, Mesquita - RJ</p>
+<span class="mt-3 inline-flex items-center gap-1.5 py-1 px-3 rounded-full text-[11px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> AGENDAMENTO ONLINE DISPONÍVEL
+                </span>
+</div>
+</div>
+<!-- QUICK ACTION BUTTONS -->
+<div class="px-4 -mt-4 relative z-20 space-y-3">
+<button class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-bronze-600 via-amber-600 to-amber-700 text-white font-bold text-sm shadow-xl shadow-bronze-900/40 hover:opacity-95 transition flex items-center justify-center gap-2.5" onclick="scrollToServices()">
+<i class="fa-solid fa-calendar-plus text-base"></i> Agendar Procedimento
+            </button>
+<div class="grid grid-cols-2 gap-3">
+<a class="py-3 px-4 rounded-xl bg-stone-900 border border-stone-800 hover:border-emerald-500/50 text-stone-200 font-semibold text-xs transition flex items-center justify-center gap-2 shadow-md" href="https://wa.me/5521999999999?text=Olá! Vim pelo site da Moreninha do Bronze e gostaria de tirar dúvidas." target="_blank">
+<i class="fa-brands fa-whatsapp text-emerald-400 text-base"></i> WhatsApp
+                </a>
+<a class="py-3 px-4 rounded-xl bg-stone-900 border border-stone-800 hover:border-pink-500/50 text-stone-200 font-semibold text-xs transition flex items-center justify-center gap-2 shadow-md" href="https://instagram.com" target="_blank">
+<i class="fa-brands fa-instagram text-pink-400 text-base"></i> Instagram
+                </a>
+</div>
+<!-- INFO CARD -->
+<div class="bg-stone-900 border border-stone-800 rounded-2xl p-4 space-y-3 shadow-md">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-lg bg-stone-800 flex items-center justify-center text-amber-400 shrink-0 mt-0.5">
+<i class="fa-regular fa-clock text-sm"></i>
+</div>
+<div>
+<h4 class="text-xs font-bold text-stone-300">Horário de funcionamento</h4>
+<p class="text-xs text-stone-400">Segunda a Sábado: 08:00 às 18:00</p>
+</div>
+</div>
+<div class="border-t border-stone-800/80 pt-3 flex items-start gap-3">
+<div class="w-8 h-8 rounded-lg bg-stone-800 flex items-center justify-center text-amber-400 shrink-0 mt-0.5">
+<i class="fa-solid fa-location-dot text-sm"></i>
+</div>
+<div>
+<h4 class="text-xs font-bold text-stone-300">Endereço</h4>
+<p class="text-xs text-stone-400">Rua Aurélia, Mesquita - RJ</p>
+<a class="text-[11px] text-amber-400 hover:underline font-semibold mt-0.5 inline-block" href="https://maps.google.com/?q=Rua+Aurelia+Mesquita+RJ" target="_blank">Ver no mapa</a>
+</div>
+</div>
+</div>
+</div>
+<!-- SERVICES SECTION -->
+<div class="px-4 mt-8 space-y-4" id="servicesSection">
+<div class="flex items-center justify-between">
+<h3 class="font-serif font-bold text-xl text-stone-100">Serviços</h3>
+<span class="text-xs text-stone-400">Escolha o ideal</span>
+</div>
+<div class="space-y-4" id="servicesListContainer">
+<!-- Injected via JavaScript -->
+</div>
+</div>
+<!-- BOOKING WIDGET MODAL / DRAWER -->
+<div class="fixed inset-0 z-50 bg-stone-950/80 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4" id="bookingModal">
+<div class="bg-stone-900 border border-stone-800 rounded-t-3xl sm:rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 space-y-6 shadow-2xl animate-in fade-in slide-in-from-bottom duration-200">
+<!-- Modal Header -->
+<div class="flex items-center justify-between border-b border-stone-800 pb-4">
+<div>
+<span class="text-[11px] font-bold text-amber-400 uppercase tracking-wider">Agendamento Online</span>
+<h3 class="font-serif font-bold text-xl text-stone-100" id="modalStepTitle">Passo 1 de 3</h3>
+</div>
+<button class="w-8 h-8 rounded-full bg-stone-800 text-stone-400 hover:text-white flex items-center justify-center transition" onclick="closeBookingModal()">
+<i class="fa-solid fa-xmark text-sm"></i>
+</button>
+</div>
+<!-- Stepper Indicator -->
+<div class="flex items-center justify-between px-2">
+<div class="flex flex-col items-center flex-1">
+<div class="w-8 h-8 rounded-full bg-amber-500 text-stone-950 font-bold text-xs flex items-center justify-center shadow-md" id="stepIndicator1">1</div>
+<span class="text-[10px] text-stone-400 mt-1">Serviço</span>
+</div>
+<div class="h-0.5 flex-1 bg-stone-800 mx-1"></div>
+<div class="flex flex-col items-center flex-1">
+<div class="w-8 h-8 rounded-full bg-stone-800 text-stone-400 font-bold text-xs flex items-center justify-center" id="stepIndicator2">2</div>
+<span class="text-[10px] text-stone-400 mt-1">Data/Hora</span>
+</div>
+<div class="h-0.5 flex-1 bg-stone-800 mx-1"></div>
+<div class="flex flex-col items-center flex-1">
+<div class="w-8 h-8 rounded-full bg-stone-800 text-stone-400 font-bold text-xs flex items-center justify-center" id="stepIndicator3">3</div>
+<span class="text-[10px] text-stone-400 mt-1">Confirmação</span>
+</div>
+</div>
+<!-- STEP 1 CONTENT: SERVICE & SPECIALIST -->
+<div class="space-y-4" id="modalStep1">
+<div>
+<label class="block text-xs font-semibold text-stone-300 mb-1.5">Serviço Selecionado</label>
+<select class="w-full bg-stone-950 border border-stone-700 rounded-xl px-4 py-3 text-sm text-stone-200 focus:outline-none focus:border-amber-500 transition" id="selectServiceDropdown" onchange="onServiceDropdownChange(this.value)">
+<!-- Options injected via JS -->
+</select>
+</div>
+<div>
+<label class="block text-xs font-semibold text-stone-300 mb-1.5">Especialista</label>
+<select class="w-full bg-stone-950 border border-stone-700 rounded-xl px-4 py-3 text-sm text-stone-200 focus:outline-none focus:border-amber-500 transition" id="selectSpecialist">
+<option value="Taiane">Taiane (Especialista Principal)</option>
+<option value="Camila">Camila (Assistente Técnica)</option>
+</select>
+</div>
+<button class="w-full py-3.5 rounded-xl bg-amber-500 text-stone-950 font-bold text-sm hover:bg-amber-400 transition shadow-lg shadow-amber-900/20 flex items-center justify-center gap-2" onclick="goToModalStep(2)" type="button">
+                        Avançar para Data e Horário <i class="fa-solid fa-arrow-right"></i>
+</button>
+</div>
+<!-- STEP 2 CONTENT: DATE & TIME -->
+<div class="hidden space-y-4" id="modalStep2">
+<div>
+<label class="block text-xs font-semibold text-stone-300 mb-1.5">Escolha a Data</label>
+<input class="w-full bg-stone-950 border border-stone-700 rounded-xl px-4 py-3 text-sm text-stone-200 focus:outline-none focus:border-amber-500 transition" id="bookingDateInput" type="date"/>
+</div>
+<div>
+<label class="block text-xs font-semibold text-stone-300 mb-1.5">Horários Disponíveis (Tarde/Manhã)</label>
+<div class="grid grid-cols-3 gap-2.5" id="modalTimeSlots">
+<!-- Time slots injected -->
+</div>
+</div>
+<div class="flex gap-3 pt-2">
+<button class="w-1/3 py-3 rounded-xl bg-stone-800 text-stone-300 font-semibold text-sm hover:bg-stone-700 transition" onclick="goToModalStep(1)" type="button">
+                            Voltar
+                        </button>
+<button class="w-2/3 py-3 rounded-xl bg-stone-800 text-stone-500 font-bold text-sm cursor-not-allowed transition" disabled="" id="btnToStep3" onclick="goToModalStep(3)" type="button">
+                            Continuar
+                        </button>
+</div>
+</div>
+<!-- STEP 3 CONTENT: CLIENT DETAILS -->
+<div class="hidden space-y-4" id="modalStep3">
+<div class="bg-stone-950 p-4 rounded-xl border border-stone-800 text-xs space-y-1.5">
+<div class="text-amber-400 font-bold">Resumo do Horário:</div>
+<div class="text-stone-300" id="summaryText">Serviço • Data • Horário</div>
+</div>
+<form class="space-y-3" id="clientForm" onsubmit="submitFinalBooking(event)">
+<div>
+<label class="block text-xs font-semibold text-stone-300 mb-1">Seu Nome Completo *</label>
+<input class="w-full bg-stone-950 border border-stone-700 rounded-xl px-4 py-2.5 text-sm text-stone-200 focus:outline-none focus:border-amber-500" id="clientNameInput" placeholder="Ex: Juliana Santos" required="" type="text"/>
+</div>
+<div>
+<label class="block text-xs font-semibold text-stone-300 mb-1">WhatsApp (com DDD) *</label>
+<input class="w-full bg-stone-950 border border-stone-700 rounded-xl px-4 py-2.5 text-sm text-stone-200 focus:outline-none focus:border-amber-500" id="clientPhoneInput" placeholder="(21) 99999-9999" required="" type="tel"/>
+</div>
+<div class="flex items-center gap-2 pt-1">
+<input checked="" class="w-4 h-4 accent-amber-500 rounded bg-stone-950 border-stone-700" id="saveDataCheck" type="checkbox"/>
+<label class="text-xs text-stone-400" for="saveDataCheck">Lembrar meus dados neste aparelho</label>
+</div>
+<div class="flex gap-3 pt-3">
+<button class="w-1/3 py-3 rounded-xl bg-stone-800 text-stone-300 font-semibold text-sm hover:bg-stone-700 transition" onclick="goToModalStep(2)" type="button">
+                                Voltar
+                            </button>
+<button class="w-2/3 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-stone-950 font-bold text-sm hover:opacity-90 transition shadow-lg shadow-amber-900/30 flex items-center justify-center gap-2" type="submit">
+<i class="fa-brands fa-whatsapp text-base"></i> Confirmar Agendamento
+                            </button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<!-- SUCCESS MODAL -->
+<div class="fixed inset-0 z-50 bg-stone-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4" id="successModal">
+<div class="bg-stone-900 border border-stone-800 rounded-3xl w-full max-w-sm p-6 text-center space-y-4 shadow-2xl">
+<div class="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto text-2xl shadow-inner">
+<i class="fa-solid fa-check"></i>
+</div>
+<div>
+<span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Sucesso!</span>
+<h3 class="font-serif font-bold text-xl text-white mt-1">Horário Reservado</h3>
+<p class="text-xs text-stone-400 mt-2 leading-relaxed">Seu agendamento foi registrado com sucesso e enviado para confirmação no WhatsApp!</p>
+</div>
+<div class="bg-stone-950 p-4 rounded-xl text-left text-xs space-y-2 border border-stone-800 text-stone-300" id="successDetailsBox">
+<!-- Injected details -->
+</div>
+<button class="w-full py-3 rounded-xl bg-stone-800 text-stone-200 font-bold text-xs hover:bg-stone-700 transition" onclick="closeSuccessModal()">
+                    Voltar ao Início
+                </button>
+</div>
+</div>
+<!-- CLIENT APPOINTMENTS MODAL -->
+<div class="fixed inset-0 z-50 bg-stone-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4" id="clientBookingsModal">
+<div class="bg-stone-900 border border-stone-800 rounded-3xl w-full max-w-md p-6 space-y-4 shadow-2xl max-h-[80vh] overflow-y-auto">
+<div class="flex items-center justify-between border-b border-stone-800 pb-3">
+<h3 class="font-serif font-bold text-lg text-stone-100">Meus Agendamentos</h3>
+<button class="text-stone-400 hover:text-white" onclick="closeClientBookingsModal()">
+<i class="fa-solid fa-xmark"></i>
+</button>
+</div>
+<div class="space-y-3" id="clientBookingsList">
+<!-- Injected -->
+</div>
+</div>
+</div>
+<!-- ADMIN PANEL DRAWER / MODAL -->
+<div class="fixed inset-0 z-50 bg-stone-950/90 backdrop-blur-md hidden flex items-center justify-center p-4" id="adminPanelModal">
+<div class="bg-stone-900 border border-stone-800 rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 space-y-6 shadow-2xl">
+<div class="flex items-center justify-between border-b border-stone-800 pb-4">
+<div class="flex items-center gap-2">
+<i class="fa-solid fa-shield-halved text-amber-400"></i>
+<h3 class="font-serif font-bold text-lg text-stone-100">Painel Administrativo</h3>
+</div>
+<button class="text-stone-400 hover:text-white" onclick="toggleAdminPanel()">
+<i class="fa-solid fa-xmark text-lg"></i>
+</button>
+</div>
+<!-- Admin Auth check -->
+<div class="space-y-4 py-4 text-center" id="adminLoginForm">
+<p class="text-xs text-stone-400">Digite a senha para gerenciar os agendamentos da Moreninha do Bronze.</p>
+<input class="w-full bg-stone-950 border border-stone-700 rounded-xl px-4 py-3 text-sm text-stone-200 text-center tracking-widest focus:outline-none focus:border-amber-500" id="adminPasswordInput" placeholder="Senha (ex: bronze123)" type="password"/>
+<button class="w-full py-3 rounded-xl bg-amber-500 text-stone-950 font-bold text-sm hover:bg-amber-400 transition" onclick="checkAdminPassword()">
+                        Entrar no Painel
+                    </button>
+</div>
+<!-- Admin Dashboard content -->
+<div class="hidden space-y-4" id="adminDashboardContent">
+<div class="flex justify-between items-center bg-stone-950 p-4 rounded-2xl border border-stone-800">
+<div>
+<span class="text-[10px] text-stone-400 uppercase tracking-wider block">Total Agendado</span>
+<strong class="text-xl font-bold text-amber-400" id="adminTotalCount">0</strong>
+</div>
+<button class="px-3 py-2 rounded-xl bg-stone-800 text-stone-300 hover:bg-stone-700 text-xs font-semibold flex items-center gap-1.5 border border-stone-700" onclick="exportCSV()">
+<i class="fa-solid fa-download text-amber-400"></i> Baixar Relatório
+                        </button>
+</div>
+<div class="space-y-3" id="adminAppointmentsList">
+<!-- Injected admin items -->
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Toast Notification -->
+<div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 transform translate-y-32 opacity-0 transition-all duration-300 bg-stone-900 border border-amber-500/30 text-stone-100 px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2 text-xs font-medium" id="toast">
+<i class="fa-solid fa-circle-check text-emerald-400"></i>
+<span id="toastMessage">Ação realizada com sucesso!</span>
+</div>
+<!-- JavaScript Application Logic -->
+<script>
+        // Services catalog matching the aesthetic style
+        const SERVICES = [
+            {
+                id: 'bronze_natural',
+                name: 'Bronzeamento Natural',
+                description: 'Biquíni de esparadrapo, marquinha perfeita ao sol e hidratação pós-bronze.',
+                price: 120.00,
+                duration: '2h 30min',
+                image: 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&q=80&w=400'
+            },
+            {
+                id: 'banho_lua',
+                name: 'Banho de Lua',
+                description: 'Clareamento de pelos com produtos hidratantes, esfoliação e toque aveludado.',
+                price: 70.00,
+                duration: '50min',
+                image: 'https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&q=80&w=400'
+            },
+            {
+                id: 'jet_bronze',
+                name: 'Jet Bronze (A Jato)',
+                description: 'Bronzeamento artificial imediato a jato, ideal para eventos de última hora.',
+                price: 90.00,
+                duration: '45min',
+                image: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&q=80&w=400'
+            },
+            {
+                id: 'esfoliacao_spa',
+                name: 'Esfoliação Corporal SPA',
+                description: 'Remoção completa de células mortas e renovação celular profunda.',
+                price: 60.00,
+                duration: '40min',
+                image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=400'
+            }
+        ];
+
+        const TIME_SLOTS = ['09:00', '10:30', '13:00', '14:30', '16:00', '17:30'];
+
+        // State
+        let selectedServiceId = SERVICES[0].id;
+        let selectedDate = '';
+        let selectedTime = '';
+        let currentModalStep = 1;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderServicesList();
+            populateServiceDropdown();
+            initDatePicker();
+            loadUserData();
+        });
+
+        function renderServicesList() {
+            const container = document.getElementById('servicesListContainer');
+            if (!container) return;
+            container.innerHTML = SERVICES.map(srv => `
+                <div class="bg-stone-900 border border-stone-800 rounded-2xl overflow-hidden shadow-md flex flex-col">
+                    <div class="h-40 overflow-hidden relative">
+                        <img src="${srv.image}" alt="${srv.name}" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-stone-900 via-transparent to-transparent"></div>
+                    </div>
+                    <div class="p-4 flex flex-col flex-grow justify-between space-y-3">
+                        <div>
+                            <h4 class="font-serif font-bold text-base text-stone-100">${srv.name}</h4>
+                            <p class="text-xs text-stone-400 mt-1 leading-relaxed">${srv.description}</p>
+                        </div>
+                        <div class="flex items-center justify-between pt-2 border-t border-stone-800/80">
+                            <div>
+                                <span class="text-amber-400 font-bold text-sm">R$ ${srv.price.toFixed(2).replace('.', ',')}</span>
+                                <span class="text-[11px] text-stone-500 block">${srv.duration}</span>
+                            </div>
+                            <button onclick="openBookingModalForService('${srv.id}')" class="px-4 py-2 rounded-xl bg-amber-500 text-stone-950 font-bold text-xs hover:bg-amber-400 transition shadow-md">
+                                Agendar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function populateServiceDropdown() {
+            const select = document.getElementById('selectServiceDropdown');
+            if (!select) return;
+            select.innerHTML = SERVICES.map(srv => `
+                <option value="${srv.id}">${srv.name} - R$ ${srv.price.toFixed(2).replace('.', ',')} (${srv.duration})</option>
+            `).join('');
+        }
+
+        function initDatePicker() {
+            const dateInput = document.getElementById('bookingDateInput');
+            if (!dateInput) return;
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.min = today;
+            dateInput.value = today;
+            selectedDate = today;
+
+            dateInput.addEventListener('change', (e) => {
+                selectedDate = e.target.value;
+            });
+
+            renderTimeSlots();
+        }
+
+        function renderTimeSlots() {
+            const container = document.getElementById('modalTimeSlots');
+            if (!container) return;
+            container.innerHTML = TIME_SLOTS.map(time => `
+                <button type="button" onclick="selectTimeSlot('${time}')" id="timeSlot-${time}" class="py-2.5 px-3 rounded-xl border border-stone-800 bg-stone-950 text-stone-300 font-semibold text-xs hover:border-amber-500 transition">
+                    ${time}
+                </button>
+            `).join('');
+        }
+
+        function selectTimeSlot(time) {
+            selectedTime = time;
+            TIME_SLOTS.forEach(t => {
+                const btn = document.getElementById(`timeSlot-${t}`);
+                if (!btn) return;
+                if (t === time) {
+                    btn.className = 'py-2.5 px-3 rounded-xl border border-amber-500 bg-amber-500/10 text-amber-400 font-bold text-xs shadow-sm';
+                } else {
+                    btn.className = 'py-2.5 px-3 rounded-xl border border-stone-800 bg-stone-950 text-stone-300 font-semibold text-xs hover:border-amber-500 transition';
+                }
+            });
+
+            const nextBtn = document.getElementById('btnToStep3');
+            if (nextBtn) {
+                nextBtn.disabled = false;
+                nextBtn.className = 'w-2/3 py-3 rounded-xl bg-amber-500 text-stone-950 font-bold text-sm hover:bg-amber-400 transition shadow-lg shadow-amber-900/20';
+            }
+        }
+
+        function scrollToServices() {
+            openBookingModal();
+        }
+
+        function openBookingModalForService(serviceId) {
+            selectedServiceId = serviceId;
+            const dropdown = document.getElementById('selectServiceDropdown');
+            if (dropdown) dropdown.value = serviceId;
+            openBookingModal();
+        }
+
+        function openBookingModal() {
+            const modal = document.getElementById('bookingModal');
+            if (modal) modal.classList.remove('hidden');
+            goToModalStep(1);
+        }
+
+        function closeBookingModal() {
+            const modal = document.getElementById('bookingModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function onServiceDropdownChange(val) {
+            selectedServiceId = val;
+        }
+
+        function goToModalStep(step) {
+            currentModalStep = step;
+            const stepTitle = document.getElementById('modalStepTitle');
+            if (stepTitle) stepTitle.innerText = `Passo ${step} de 3`;
+
+            const s1 = document.getElementById('modalStep1');
+            const s2 = document.getElementById('modalStep2');
+            const s3 = document.getElementById('modalStep3');
+            if (s1) s1.classList.add('hidden');
+            if (s2) s2.classList.add('hidden');
+            if (s3) s3.classList.add('hidden');
+
+            for (let i = 1; i <= 3; i++) {
+                const ind = document.getElementById(`stepIndicator${i}`);
+                if (!ind) continue;
+                if (i <= step) {
+                    ind.className = 'w-8 h-8 rounded-full bg-amber-500 text-stone-950 font-bold text-xs flex items-center justify-center shadow-md';
+                } else {
+                    ind.className = 'w-8 h-8 rounded-full bg-stone-800 text-stone-400 font-bold text-xs flex items-center justify-center';
+                }
+            }
+
+            if (step === 1 && s1) {
+                s1.classList.remove('hidden');
+            } else if (step === 2 && s2) {
+                s2.classList.remove('hidden');
+            } else if (step === 3 && s3) {
+                s3.classList.remove('hidden');
+                const srv = SERVICES.find(s => s.id === selectedServiceId) || SERVICES[0];
+                const parts = (selectedDate || '').split('-');
+                const formattedDate = parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : selectedDate;
+                const specialistElem = document.getElementById('selectSpecialist');
+                const summaryElem = document.getElementById('summaryText');
+                if (summaryElem) {
+                    summaryElem.innerHTML = `
+                        <b>Serviço:</b> ${srv.name} (R$ ${srv.price.toFixed(2).replace('.', ',')})<br>
+                        <b>Data:</b> ${formattedDate} às ${selectedTime || 'Não selecionado'}<br>
+                        <b>Especialista:</b> ${specialistElem ? specialistElem.value : 'Taiane'}
+                    `;
+                }
+            }
+        }
+
+        function submitFinalBooking(e) {
+            e.preventDefault();
+            const name = document.getElementById('clientNameInput').value.trim();
+            const phone = document.getElementById('clientPhoneInput').value.trim();
+            const specialist = document.getElementById('selectSpecialist') ? document.getElementById('selectSpecialist').value : 'Taiane';
+            const srv = SERVICES.find(s => s.id === selectedServiceId) || SERVICES[0];
+
+            const appointment = {
+                id: 'AP-' + Math.floor(100000 + Math.random() * 900000),
+                serviceName: srv.name,
+                servicePrice: srv.price,
+                specialist: specialist,
+                date: selectedDate,
+                time: selectedTime,
+                clientName: name,
+                clientPhone: phone,
+                createdAt: new Date().toISOString()
+            };
+
+            let list = JSON.parse(localStorage.getItem('moreninha_appointments') || '[]');
+            list.push(appointment);
+            localStorage.setItem('moreninha_appointments', JSON.stringify(list));
+
+            const saveCheck = document.getElementById('saveDataCheck');
+            if (saveCheck && saveCheck.checked) {
+                localStorage.setItem('moreninha_client_name', name);
+                localStorage.setItem('moreninha_client_phone', phone);
+            }
+
+            closeBookingModal();
+
+            const parts = (selectedDate || '').split('-');
+            const formattedDate = parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : selectedDate;
+            const detailsBox = document.getElementById('successDetailsBox');
+            if (detailsBox) {
+                detailsBox.innerHTML = `
+                    <div><b>Cliente:</b> ${name}</div>
+                    <div><b>Serviço:</b> ${srv.name}</div>
+                    <div><b>Especialista:</b> ${specialist}</div>
+                    <div><b>Data:</b> ${formattedDate} às ${selectedTime}</div>
+                    <div><b>Local:</b> Rua Aurélia, Mesquita - RJ</div>
+                `;
+            }
+            const successModal = document.getElementById('successModal');
+            if (successModal) successModal.classList.remove('hidden');
+
+            const msg = `✨ *AGENDAMENTO - MORENINHA DO BRONZE* ✨\n\n` +
+                `👤 *Cliente:* ${name}\n` +
+                `📞 *Telefone:* ${phone}\n` +
+                `💆‍♀️ *Serviço:* ${srv.name}\n` +
+                `👩‍⚕️ *Especialista:* ${specialist}\n` +
+                `📅 *Data:* ${formattedDate} às ${selectedTime}\n` +
+                `📍 *Local:* Rua Aurélia, Mesquita - RJ`;
+            
+            setTimeout(() => {
+                window.open(`https://wa.me/5521999999999?text=${encodeURIComponent(msg)}`, '_blank');
+            }, 800);
+        }
+
+        function loadUserData() {
+            const savedName = localStorage.getItem('moreninha_client_name');
+            const savedPhone = localStorage.getItem('moreninha_client_phone');
+            const nameInput = document.getElementById('clientNameInput');
+            const phoneInput = document.getElementById('clientPhoneInput');
+            if (savedName && nameInput) nameInput.value = savedName;
+            if (savedPhone && phoneInput) phoneInput.value = savedPhone;
+        }
+
+        function closeSuccessModal() {
+            const modal = document.getElementById('successModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function openClientBookingsModal() {
+            const list = JSON.parse(localStorage.getItem('moreninha_appointments') || '[]');
+            const container = document.getElementById('clientBookingsList');
+            if (!container) return;
+            if (list.length === 0) {
+                container.innerHTML = `<p class="text-xs text-stone-500 text-center py-6">Nenhum agendamento encontrado neste aparelho.</p>`;
+            } else {
+                container.innerHTML = list.slice().reverse().map(item => {
+                    const parts = (item.date || '').split('-');
+                    const formattedDate = parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : item.date;
+                    return `
+                        <div class="bg-stone-950 p-3.5 rounded-xl border border-stone-800 text-xs space-y-1">
+                            <div class="flex justify-between items-center text-amber-400 font-bold">
+                                <span>${item.serviceName}</span>
+                                <span>R$ ${(item.servicePrice || 0).toFixed(2).replace('.', ',')}</span>
+                            </div>
+                            <div class="text-stone-300">📅 ${formattedDate} às ${item.time}</div>
+                            <div class="text-stone-400">👩‍⚕️ Profissional: ${item.specialist}</div>
+                            <div class="text-stone-500 text-[10px]">Cliente: ${item.clientName} (${item.clientPhone})</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            const modal = document.getElementById('clientBookingsModal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeClientBookingsModal() {
+            const modal = document.getElementById('clientBookingsModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function toggleAdminPanel() {
+            const modal = document.getElementById('adminPanelModal');
+            if (!modal) return;
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function checkAdminPassword() {
+            const passInput = document.getElementById('adminPasswordInput');
+            const pass = passInput ? passInput.value : '';
+            if (pass === 'bronze123' || pass === 'moreninha') {
+                const loginForm = document.getElementById('adminLoginForm');
+                const dash = document.getElementById('adminDashboardContent');
+                if (loginForm) loginForm.classList.add('hidden');
+                if (dash) dash.classList.remove('hidden');
+                loadAdminAppointments();
+                showToast('Painel desbloqueado com sucesso!');
+            } else {
+                showToast('Senha incorreta!');
+            }
+        }
+
+        function loadAdminAppointments() {
+            const list = JSON.parse(localStorage.getItem('moreninha_appointments') || '[]');
+            const countEl = document.getElementById('adminTotalCount');
+            if (countEl) countEl.innerText = list.length;
+            const container = document.getElementById('adminAppointmentsList');
+            if (!container) return;
+            
+            if (list.length === 0) {
+                container.innerHTML = `<p class="text-xs text-stone-500 text-center py-6">Nenhum agendamento registrado.</p>`;
+                return;
+            }
+
+            container.innerHTML = list.map(item => {
+                const parts = (item.date || '').split('-');
+                const formattedDate = parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : item.date;
+                return `
+                    <div class="bg-stone-950 p-3.5 rounded-xl border border-stone-800 text-xs space-y-1">
+                        <div class="flex justify-between items-center font-bold text-stone-100">
+                            <span>${item.clientName}</span>
+                            <span class="text-amber-400">R$ ${(item.servicePrice || 0).toFixed(2).replace('.', ',')}</span>
+                        </div>
+                        <div class="text-stone-300">💆‍♀️ ${item.serviceName} (${item.specialist})</div>
+                        <div class="text-stone-400">📅 ${formattedDate} às ${item.time}</div>
+                        <div class="text-stone-500">📞 ${item.clientPhone}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function exportCSV() {
+            const list = JSON.parse(localStorage.getItem('moreninha_appointments') || '[]');
+            if (list.length === 0) {
+                showToast('Sem dados para exportar.');
+                return;
+            }
+            let csv = "ID,Cliente,Telefone,Servico,Especialista,Valor,Data,Horario\n";
+            list.forEach(i => {
+                csv += `"${i.id}","${i.clientName}","${i.clientPhone}","${i.serviceName}","${i.specialist}","${i.servicePrice}","${i.date}","${i.time}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'agendamentos_moreninha.csv');
+            a.click();
+            showToast('Relatório baixado com sucesso!');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toastMessage');
+            if (!toast || !msgEl) return;
+            msgEl.innerText = msg;
+            toast.classList.remove('translate-y-32', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-32', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+{
+  "id": "./",
+  "name": "Moreninha do Bronze - Agendamento",
+  "short_name": "Moreninha",
+  "description": "Agendamento online de bronzeamento natural, banho de lua e estética corporal em Mesquita - RJ.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0284c7",
+  "background_color": "#0f172a",
+  "categories": ["beauty", "lifestyle"],
+  "icons": [
+    {
+      "src": "./assets/avatar.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./images/avatar.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
