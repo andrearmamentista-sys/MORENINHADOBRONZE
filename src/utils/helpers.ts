@@ -133,7 +133,7 @@ export const DEFAULT_SPECIALISTS: Specialist[] = [
     id: 'spec-1',
     name: 'Camila Santos',
     role: 'Especialista em Bronzeamento & Marquinha',
-    imageUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80',
+    imageUrl: './images/banner.png',
     bio: 'Profissional certificada com mais de 6 anos de experiência em marquinhas perfeitas e banho de lua.',
   },
 ];
