@@ -5,7 +5,11 @@
   "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/((?!assets/|images/|.*\\..*).*)",
+      "source": "/api/(.*)",
+      "destination": "/api"
+    },
+    {
+      "source": "/((?!assets/|images/|uploads/|api/|.*\\..*).*)",
       "destination": "/index.html"
     }
   ],
