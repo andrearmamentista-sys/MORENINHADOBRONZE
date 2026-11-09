@@ -1,15 +1,18 @@
 import { Appointment, Service, SalonConfig, Specialist, AppointmentStatus } from '../types';
 
+export const APP_CACHE_VERSION = 'v20261109_02';
+
 export function resolveAssetUrl(url?: string | null): string {
   if (!url) return '';
   const trimmed = url.trim();
   if (!trimmed) return '';
   if (
-    trimmed.startsWith('http://') ||
-    trimmed.startsWith('https://') ||
     trimmed.startsWith('data:') ||
     trimmed.startsWith('blob:')
   ) {
+    return trimmed;
+  }
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
     return trimmed;
   }
   let clean = trimmed;
@@ -21,7 +24,11 @@ export function resolveAssetUrl(url?: string | null): string {
     ? import.meta.env.BASE_URL
     : './';
   const prefix = base.endsWith('/') ? base : `${base}/`;
-  return `${prefix}${clean}`;
+  const full = `${prefix}${clean}`;
+  if (clean.startsWith('images/') && !full.includes('?')) {
+    return `${full}?v=${APP_CACHE_VERSION}`;
+  }
+  return full;
 }
 
 export const DEFAULT_SERVICES: Service[] = [
@@ -139,12 +146,42 @@ export const DEFAULT_SPECIALISTS: Specialist[] = [
 ];
 
 const STORAGE_KEYS = {
-  CONFIG: 'moreninha_salon_config_v3',
-  SERVICES: 'moreninha_services_v4',
+  CONFIG: `moreninha_salon_config_${APP_CACHE_VERSION}`,
+  SERVICES: `moreninha_services_${APP_CACHE_VERSION}`,
   APPOINTMENTS: 'moreninha_appointments_v3',
-  SPECIALISTS: 'moreninha_specialists_v3',
+  SPECIALISTS: `moreninha_specialists_${APP_CACHE_VERSION}`,
   USER_DATA: 'moreninha_user_saved_v3',
+  CACHE_VERSION: 'moreninha_last_cache_version',
 };
+
+/**
+ * Automatically purges stale cached data from previous builds
+ * so refreshing the browser immediately reflects new products, images, and config.
+ */
+export function ensureFreshCache(): void {
+  try {
+    const lastVersion = localStorage.getItem(STORAGE_KEYS.CACHE_VERSION);
+    if (lastVersion !== APP_CACHE_VERSION) {
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (
+          k &&
+          k.startsWith('moreninha_') &&
+          !k.includes('appointment') &&
+          !k.includes('user_saved') &&
+          !k.endsWith(APP_CACHE_VERSION)
+        ) {
+          keysToRemove.push(k);
+        }
+      }
+      keysToRemove.forEach((k) => localStorage.removeItem(k));
+      localStorage.setItem(STORAGE_KEYS.CACHE_VERSION, APP_CACHE_VERSION);
+    }
+  } catch {
+    // Safe fail in private browsing mode
+  }
+}
 
 export function formatCurrency(value: number): string {
   return new Intl.NumberFormat('pt-BR', {

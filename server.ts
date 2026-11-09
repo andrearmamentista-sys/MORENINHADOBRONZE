@@ -14,8 +14,17 @@ const PORT = Number(process.env.PORT) || 3000;
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Serve uploaded assets directly
-app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
+// Anti-caching header middleware for API routes so browsers always receive live updates
+app.use('/api', (_req, res, next) => {
+  res.set('Cache-Control', 'no-cache, no-store, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  next();
+});
+
+// Serve static images and uploads directly with immediate revalidation (never stale)
+app.use('/images', express.static(path.join(__dirname, 'public', 'images'), { maxAge: 0, etag: true }));
+app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads'), { maxAge: 0, etag: true }));
 
 // Health Check
 app.get('/api/health', async (_req: Request, res: Response) => {
