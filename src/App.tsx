@@ -202,12 +202,12 @@ export default function App() {
       phone: newConfig.phone || newConfig.whatsappNumber || '21976333205',
       whatsappNumber: newConfig.whatsappNumber || newConfig.phone || '21976333205',
       whatsappDisplay: newConfig.whatsappDisplay || newConfig.phone || '(21) 97633-3205',
-      instagramHandle: newConfig.instagramHandle || '@moreninhadobronze',
+      instagramHandle: newConfig.instagramHandle || '@moreninhadobronze01',
       instagramUrl:
         newConfig.instagramUrl ||
         (newConfig.instagramHandle
-          ? `https://instagram.com/${newConfig.instagramHandle.replace('@', '')}`
-          : 'https://instagram.com/moreninhadobronze'),
+          ? `https://www.instagram.com/${newConfig.instagramHandle.replace('@', '')}`
+          : 'https://www.instagram.com/moreninhadobronze01'),
       mapsUrl:
         newConfig.mapsUrl && newConfig.mapsUrl.trim() !== ''
           ? newConfig.mapsUrl.trim()
@@ -256,7 +256,7 @@ export default function App() {
   const displayedUserBookings = userBookings.length > 0 ? userBookings : appointments.slice(0, 3);
 
   const salonNameDisplay = config.salonName || config.name || 'Moreninha do Bronze';
-  const instagramHref = formatInstagramUrl(config.instagramUrl || config.instagramHandle || 'moreninhadobronze');
+  const instagramHref = formatInstagramUrl(config.instagramUrl || config.instagramHandle || 'moreninhadobronze01');
 
   return (
     <div className="min-h-screen bg-[#f0f7ff] text-slate-800 flex flex-col selection:bg-sky-500 selection:text-white">

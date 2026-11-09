@@ -43,8 +43,8 @@ export const DEFAULT_SERVICES: Service[] = [
     durationMinutes: 120,
     price: 40.0,
     description: 'Sessão completa de bronzeamento duplo com marquinha perfeita e ativador dourado.',
-    imageUrl: './images/banner.png',
-    image: './images/banner.png',
+    imageUrl: './images/bronze-2h.png',
+    image: './images/bronze-2h.png',
     popular: true,
   },
   {
@@ -54,8 +54,8 @@ export const DEFAULT_SERVICES: Service[] = [
     durationMinutes: 45,
     price: 15.0,
     description: 'Descoloração dos pelos com banho de óleos protetores e esfoliação corporal.',
-    imageUrl: './images/banner-thumb.png',
-    image: './images/banner-thumb.png',
+    imageUrl: './images/banho-lua.png',
+    image: './images/banho-lua.png',
   },
 ];
 
@@ -68,8 +68,8 @@ export const DEFAULT_CONFIG: SalonConfig = {
   phone: '21976333205',
   whatsappNumber: '21976333205',
   whatsappDisplay: '(21) 97633-3205',
-  instagramHandle: '@moreninhadobronze',
-  instagramUrl: 'https://instagram.com/moreninhadobronze',
+  instagramHandle: '@moreninhadobronze01',
+  instagramUrl: 'https://www.instagram.com/moreninhadobronze01',
   mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Rua+Aur%C3%A9lia%2C+Mesquita+-+RJ',
   coverImageUrl: './images/banner.png',
   heroCoverImage: './images/banner.png',
@@ -288,7 +288,7 @@ export function formatWhatsAppUrl(rawPhone: string, message: string): string {
 }
 
 export function formatInstagramUrl(raw: string): string {
-  if (!raw) return 'https://instagram.com/moreninhadobronze';
+  if (!raw) return 'https://www.instagram.com/moreninhadobronze01';
   const trimmed = raw.trim();
   if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
     if (trimmed.includes('instagram.com/https://')) {
@@ -297,18 +297,18 @@ export function formatInstagramUrl(raw: string): string {
     return trimmed;
   }
   const clean = trimmed.replace(/^@+/, '').replace(/^instagram\.com\//, '');
-  return `https://instagram.com/${clean || 'moreninhadobronze'}`;
+  return `https://www.instagram.com/${clean || 'moreninhadobronze01'}`;
 }
 
 export function formatInstagramHandle(raw: string): string {
-  if (!raw) return '@moreninhadobronze';
+  if (!raw) return '@moreninhadobronze01';
   const trimmed = raw.trim();
   if (trimmed.includes('instagram.com/')) {
     const parts = trimmed.split('instagram.com/');
-    const handle = parts[1]?.split('/')[0]?.split('?')[0] || 'moreninhadobronze';
+    const handle = parts[1]?.split('/')[0]?.split('?')[0] || 'moreninhadobronze01';
     return `@${handle.replace(/^@+/, '')}`;
   }
-  return `@${trimmed.replace(/^@+/, '') || 'moreninhadobronze'}`;
+  return `@${trimmed.replace(/^@+/, '') || 'moreninhadobronze01'}`;
 }
 
 export function generateWhatsAppBookingUrl(

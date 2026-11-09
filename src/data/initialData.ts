@@ -68,7 +68,7 @@ export const DEFAULT_SALON_CONFIG: import('../types').SalonConfig = {
   avatarInitials: 'MB',
   whatsappNumber: '5521976333205',
   whatsappDisplay: '(21) 97633-3205',
-  instagramUrl: 'https://instagram.com/moreninhadobronze',
+  instagramUrl: 'https://www.instagram.com/moreninhadobronze01',
   mapsUrl: 'https://maps.google.com/?q=Rua+Aurelia+Mesquita+RJ',
   pixKey: '21976333205',
   pixMerchantName: 'Moreninha Bronze',

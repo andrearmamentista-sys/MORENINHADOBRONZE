@@ -34,7 +34,7 @@ export const Hero: React.FC<HeroProps> = ({
     phone,
     `Olá! Vim pelo site da ${salonTitle} e gostaria de agendar um horário.`
   );
-  const instagramUrl = formatInstagramUrl(config.instagramUrl || config.instagramHandle || 'moreninhadobronze');
+  const instagramUrl = formatInstagramUrl(config.instagramUrl || config.instagramHandle || 'moreninhadobronze01');
   
   const rawCover = config.coverImageUrl || config.heroCoverImage;
   const coverImage = rawCover ? resolveAssetUrl(rawCover) : bannerImg;
